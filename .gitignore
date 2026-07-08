@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+pip-selfcheck.json
+
+# Log files
+AGENT_LOGS.json
+*.log
+
+# IDE settings
+.idea/
+.vscode/
