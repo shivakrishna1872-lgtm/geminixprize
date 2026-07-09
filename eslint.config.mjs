@@ -11,6 +11,11 @@ const typedTypescriptRules = tseslint.configs.recommendedTypeChecked.map((config
 const eslintConfig = [
   {
     ignores: [".next/**", "node_modules/**", "out/**", "next-env.d.ts"],
+    settings: {
+      next: {
+        rootDir: "apps/web/",
+      },
+    },
   },
   js.configs.recommended,
   ...typedTypescriptRules,
@@ -18,6 +23,11 @@ const eslintConfig = [
   ...nextTypescript,
   {
     files: ["**/*.ts", "**/*.tsx"],
+    settings: {
+      next: {
+        rootDir: "apps/web/",
+      },
+    },
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -26,7 +36,8 @@ const eslintConfig = [
     },
     rules: {
       "@typescript-eslint/consistent-type-imports": "error",
-      "@typescript-eslint/no-floating-promises": "error"
+      "@typescript-eslint/no-floating-promises": "error",
+      "@next/next/no-html-link-for-pages": "off"
     }
   }
 ];

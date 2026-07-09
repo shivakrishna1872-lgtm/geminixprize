@@ -12,13 +12,37 @@ launch storefronts, manage marketing, and analyze performance.
 
 The application follows strict clean architecture boundaries:
 
-- `src/domain`: business entities, value types, and agent contracts
-- `src/application`: use cases and service interfaces
-- `src/infrastructure`: framework, API, database, AI, and provider adapters
-- `src/presentation`: React-facing view models and display configuration
-- `src/app`: Next.js routes and page composition only
+- `apps/web`: Next.js frontend
+- `services/api`: FastAPI orchestration backend
+- `packages/contracts`: shared TypeScript contracts
+- `infra`: Google Cloud infrastructure-as-code
+
+Within each application, code follows these boundaries:
+
+- `domain`: business entities, value types, and agent contracts
+- `application`: use cases and service interfaces
+- `infrastructure`: framework, API, database, AI, and provider adapters
+- `presentation`: HTTP/UI adapters and view models
 
 Business logic must not live in React components or API route handlers.
+
+## Agent System
+
+The backend is structured for these specialized agents:
+
+- CEO
+- Research
+- Branding
+- Product
+- Store
+- Marketing
+- Sales
+- Finance
+- Support
+
+Milestone 1 registers the roles and health surface only. Autonomous execution,
+Gemini reasoning, MCP connectors, and storefront provisioning are implemented in
+later milestones after the foundation is stable.
 
 ## Gemini Access
 
@@ -29,7 +53,14 @@ part of the initial architecture unless the project explicitly migrates later.
 
 ```bash
 npm install
+python3 -m pip install -r services/api/requirements-dev.txt
 npm run dev
+```
+
+Run the backend separately:
+
+```bash
+npm run dev:api
 ```
 
 Quality gates for every milestone:
@@ -38,4 +69,5 @@ Quality gates for every milestone:
 npm run lint
 npm run typecheck
 npm run build
+npm run check:api
 ```

@@ -1,4 +1,5 @@
 import { capabilityRoadmap } from "@/presentation/home/capability-roadmap";
+import { milestoneOneSystemHealth } from "@/presentation/home/system-health";
 
 export default function HomePage() {
   return (
@@ -23,6 +24,21 @@ export default function HomePage() {
             <p>{capability.description}</p>
           </article>
         ))}
+      </section>
+
+      <section className="status-strip" aria-label="Platform readiness">
+        <div>
+          <span>Frontend</span>
+          <strong>{milestoneOneSystemHealth.frontend.status}</strong>
+        </div>
+        <div>
+          <span>Backend</span>
+          <strong>{milestoneOneSystemHealth.api.status}</strong>
+        </div>
+        <div>
+          <span>Agent substrate</span>
+          <strong>{milestoneOneSystemHealth.api.capabilities.length} capabilities</strong>
+        </div>
       </section>
     </main>
   );

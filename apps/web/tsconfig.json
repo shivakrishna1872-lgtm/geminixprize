@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@antigravity/contracts": [
+        "../../packages/contracts/src/index.ts"
       ]
     }
   },
