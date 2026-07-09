@@ -63,6 +63,10 @@ Run the backend separately:
 npm run dev:api
 ```
 
+For local Gemini development, copy `services/api/.env.example` into an ignored
+local env file or export `GEMINI_API_KEY` in your shell. Do not commit real API
+keys.
+
 Quality gates for every milestone:
 
 ```bash

@@ -1,6 +1,7 @@
 from functools import lru_cache
-from typing import Literal
+from typing import Literal, Optional
 
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,6 +14,7 @@ class Settings(BaseSettings):
     environment: RuntimeEnvironment = "development"
     version: str = "0.1.0"
     cors_allowed_origins: tuple[str, ...] = ("http://127.0.0.1:3000",)
+    gemini_api_key: Optional[SecretStr] = Field(default=None, validation_alias="GEMINI_API_KEY")
 
 
 @lru_cache(maxsize=1)
