@@ -9,7 +9,11 @@ RuntimeEnvironment = Literal["development", "test", "production"]
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="ANTIGRAVITY_", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_prefix="ANTIGRAVITY_",
+        env_file=("services/api/.env.local", "services/api/.env"),
+        extra="ignore",
+    )
 
     environment: RuntimeEnvironment = "development"
     version: str = "0.1.0"

@@ -10,9 +10,9 @@ def create_app() -> FastAPI:
     settings = get_settings()
 
     app = FastAPI(
-        title="AntiGravity API",
+        title="MadeThis API",
         version=settings.version,
-        description="Agent orchestration API for the AntiGravity autonomous company builder.",
+        description="Agent orchestration API for the MadeThis autonomous company builder.",
     )
 
     app.add_middleware(

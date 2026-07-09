@@ -1,4 +1,4 @@
-"""AntiGravity API service package."""
+"""MadeThis API service package."""
 
 __all__ = ["__version__"]
 

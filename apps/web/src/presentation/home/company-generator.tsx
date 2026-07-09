@@ -66,7 +66,7 @@ export function CompanyGenerator() {
   return (
     <div className="generator-shell">
       <form className="idea-console" aria-label="Business idea prompt">
-        <label htmlFor="business-idea">What should your AI company build?</label>
+            <label htmlFor="business-idea">What should MadeThis build?</label>
         <div>
           <input
             id="business-idea"

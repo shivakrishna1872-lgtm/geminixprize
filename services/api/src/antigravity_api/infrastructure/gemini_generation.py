@@ -17,7 +17,7 @@ class GeminiGeneration:
             return {
                 "status": "configuration_required",
                 "agent_log": [
-                    "Gemini API key is not configured, so AntiGravity prepared a deterministic draft for local review."
+                    "Gemini API key is not configured, so MadeThis prepared a deterministic draft for local review."
                 ],
             }
 

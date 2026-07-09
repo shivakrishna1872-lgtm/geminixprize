@@ -11,5 +11,5 @@ def require_internal_api_key(
     if not x_antigravity_api_key or x_antigravity_api_key != expected:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing or invalid AntiGravity API key.",
+            detail="Missing or invalid MadeThis API key.",
         )

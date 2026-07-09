@@ -5,9 +5,9 @@ export default function HomePage() {
   return (
     <main>
       <header className="site-header" aria-label="Primary">
-        <a className="brand-mark" href="#top" aria-label="AntiGravity home">
+        <a className="brand-mark" href="#top" aria-label="MadeThis home">
           <span className="brand-mark__glyph" aria-hidden="true" />
-          AntiGravity
+          MadeThis
         </a>
         <nav className="nav-links" aria-label="Landing page sections">
           <a href="#agents">Agents</a>
@@ -27,7 +27,7 @@ export default function HomePage() {
           <p className="eyebrow">Google Gemini XPRIZE Hackathon</p>
           <h1 id="hero-title">Build a business that runs itself</h1>
           <p>
-            AntiGravity gives founders a Gemini-powered AI company team that
+            MadeThis gives founders a Gemini-powered AI company team that
             researches markets, designs brands, creates products, launches
             storefronts, and operates the business from one prompt.
           </p>
@@ -131,7 +131,7 @@ export default function HomePage() {
 
       <section className="feature-band" aria-labelledby="features-title">
         <div className="section-heading">
-          <p className="eyebrow">What AntiGravity handles</p>
+          <p className="eyebrow">What MadeThis handles</p>
           <h2 id="features-title">A real business stack, wired for autonomy</h2>
         </div>
         <div className="feature-grid">

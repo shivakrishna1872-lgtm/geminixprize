@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AntiGravity",
-  description: "Autonomous AI business operating system for market-to-launch workflows.",
+  title: "MadeThis",
+  description: "Autonomous AI company builder for market-to-launch workflows.",
 };
 
 type RootLayoutProps = Readonly<{

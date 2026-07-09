@@ -57,7 +57,7 @@ class GenerateCompany:
 
 def _build_company_prompt(idea: str) -> str:
     return f"""
-You are AntiGravity, an autonomous AI company builder for the Google Gemini XPRIZE.
+You are MadeThis, an autonomous AI company builder for the Google Gemini XPRIZE.
 Create a production-ready company blueprint for this founder prompt:
 
 {idea}

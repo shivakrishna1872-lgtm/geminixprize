@@ -1,6 +1,6 @@
-# AntiGravity
+# MadeThis
 
-AntiGravity is an autonomous AI business operating system for the Google Gemini
+MadeThis is an autonomous AI business operating system for the Google Gemini
 XPRIZE Hackathon.
 
 The MVP starts with product and strategy generation, but the architecture is
@@ -63,9 +63,10 @@ Run the backend separately:
 npm run dev:api
 ```
 
-For local Gemini development, copy `services/api/.env.example` into an ignored
-local env file or export `GEMINI_API_KEY` in your shell. Do not commit real API
-keys.
+For local Gemini development, copy `services/api/.env.example` into
+`services/api/.env.local` or export `GEMINI_API_KEY` in your shell. The API
+automatically loads `services/api/.env.local` and `services/api/.env`. Do not
+commit real API keys.
 
 The web app protects generation behind a founder passcode and an HttpOnly
 session cookie. Local defaults are intentionally development-only:
