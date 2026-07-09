@@ -1,5 +1,7 @@
 from antigravity_api.application.ai_text_generation import AiTextGeneration
-from antigravity_api.domain.company_blueprint import CompanyBlueprint
+import re
+
+from antigravity_api.domain.company_blueprint import CompanyBlueprint, StorefrontProduct
 
 
 class GenerateCompany:
@@ -51,6 +53,34 @@ class GenerateCompany:
                     "Store agent prepared a storefront structure for review.",
                 ),
             ),
+            product_catalog=_as_product_tuple(
+                raw_blueprint.get("product_catalog"),
+                (
+                    StorefrontProduct(
+                        name="Signal One Insulated Bottle",
+                        description="A stainless-steel daily bottle with a soft-touch finish, leakproof lid, and 24-hour cold retention.",
+                        price_usd=39.0,
+                        inventory_status="product_discovered_supplier_required",
+                        product_angle="Hero everyday hydration product for commuters, gym bags, and work desks.",
+                    ),
+                    StorefrontProduct(
+                        name="Signal Filtered Travel Bottle",
+                        description="A premium travel bottle concept with a replaceable filter cartridge and carry loop for city movement.",
+                        price_usd=49.0,
+                        inventory_status="product_discovered_supplier_required",
+                        product_angle="Upsell product for travelers who care about taste and portability.",
+                    ),
+                    StorefrontProduct(
+                        name="Signal Launch Bundle",
+                        description="A starter kit pairing the hero bottle with a sling and cleaning brush for a complete launch offer.",
+                        price_usd=69.0,
+                        inventory_status="bundle_ready_for_provider_mapping",
+                        product_angle="Bundle offer designed to raise average order value during launch.",
+                    ),
+                ),
+            ),
+            checkout_mode=_as_text(raw_blueprint.get("checkout_mode"), "local_test"),
+            storefront_slug=_slugify(_as_text(raw_blueprint.get("company_name"), "Signal Bottle Co.")),
             status=_as_text(raw_blueprint.get("status"), "draft_ready"),
         )
 
@@ -65,12 +95,15 @@ Create a production-ready company blueprint for this founder prompt:
 Return only valid JSON with these keys:
 company_name, tagline, category, audience, positioning, starter_products,
 pricing_strategy, storefront_sections, marketing_plan, launch_checklist,
-agent_log, status.
+agent_log, product_catalog, checkout_mode, storefront_slug, status.
 
 Rules:
 - Make the company distinct and legally ownable.
 - Do not claim that external stores, payments, domains, or supplier products
   were actually provisioned.
+- product_catalog must contain exactly 3 products. Each product must include
+  name, description, price_usd, inventory_status, and product_angle.
+- checkout_mode must be "local_test" unless payment provider credentials are provided.
 - starter_products, storefront_sections, marketing_plan, launch_checklist,
   and agent_log must be arrays of concise strings.
 - status should be "draft_ready" unless something is unsafe.
@@ -89,3 +122,50 @@ def _as_text_tuple(value: object, fallback: tuple[str, ...]) -> tuple[str, ...]:
         if cleaned:
             return cleaned
     return fallback
+
+
+def _as_product_tuple(
+    value: object,
+    fallback: tuple[StorefrontProduct, ...],
+) -> tuple[StorefrontProduct, ...]:
+    if not isinstance(value, list):
+        return fallback
+
+    products: list[StorefrontProduct] = []
+    for item in value:
+        if not isinstance(item, dict):
+            continue
+        products.append(
+            StorefrontProduct(
+                name=_as_text(item.get("name"), "Launch Product"),
+                description=_as_text(item.get("description"), "A launch-ready product concept."),
+                price_usd=_as_price(item.get("price_usd"), 39.0),
+                inventory_status=_as_text(
+                    item.get("inventory_status"),
+                    "product_discovered_supplier_required",
+                ),
+                product_angle=_as_text(
+                    item.get("product_angle"),
+                    "Designed as a high-converting launch product.",
+                ),
+            )
+        )
+
+    return tuple(products[:3]) if products else fallback
+
+
+def _as_price(value: object, fallback: float) -> float:
+    if isinstance(value, (int, float)) and value > 0:
+        return float(value)
+    if isinstance(value, str):
+        try:
+            parsed = float(value.replace("$", "").strip())
+        except ValueError:
+            return fallback
+        return parsed if parsed > 0 else fallback
+    return fallback
+
+
+def _slugify(value: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return slug or "generated-storefront"

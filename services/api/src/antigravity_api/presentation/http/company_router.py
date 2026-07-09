@@ -11,6 +11,7 @@ from antigravity_api.presentation.http.auth import require_internal_api_key
 from antigravity_api.presentation.http.schemas import (
     CompanyBlueprintResponse,
     GenerateCompanyRequest,
+    StorefrontProductResponse,
 )
 
 router = APIRouter(tags=["companies"], dependencies=[Depends(require_internal_api_key)])
@@ -50,5 +51,17 @@ async def generate_company(
         marketing_plan=blueprint.marketing_plan,
         launch_checklist=blueprint.launch_checklist,
         agent_log=blueprint.agent_log,
+        product_catalog=tuple(
+            StorefrontProductResponse(
+                name=product.name,
+                description=product.description,
+                price_usd=product.price_usd,
+                inventory_status=product.inventory_status,
+                product_angle=product.product_angle,
+            )
+            for product in blueprint.product_catalog
+        ),
+        checkout_mode=blueprint.checkout_mode,
+        storefront_slug=blueprint.storefront_slug,
         status=blueprint.status,
     )

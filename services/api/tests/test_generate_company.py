@@ -24,4 +24,8 @@ def test_generate_company_returns_blueprint_with_internal_api_key() -> None:
     payload = response.json()
     assert payload["company_name"]
     assert payload["starter_products"]
+    assert len(payload["product_catalog"]) == 3
+    assert payload["product_catalog"][0]["price_usd"] > 0
+    assert payload["checkout_mode"] in {"local_test", "provider_required"}
+    assert payload["storefront_slug"]
     assert payload["status"]

@@ -3,6 +3,12 @@
 import { useMemo, useState } from "react";
 import type { CompanyBlueprint } from "@antigravity/contracts";
 
+type CartLine = Readonly<{
+  name: string;
+  priceUsd: number;
+  quantity: number;
+}>;
+
 type GenerationState =
   | { status: "idle"; blueprint?: never; message?: never }
   | { status: "authenticating"; blueprint?: never; message?: never }
@@ -23,6 +29,9 @@ export function CompanyGenerator() {
   const [openaiApiKey, setOpenaiApiKey] = useState("");
   const [secretsConfigured, setSecretsConfigured] = useState(false);
   const [state, setState] = useState<GenerationState>({ status: "idle" });
+  const [cart, setCart] = useState<readonly CartLine[]>([]);
+  const [checkoutEmail, setCheckoutEmail] = useState("");
+  const [checkoutStatus, setCheckoutStatus] = useState<"idle" | "confirmed">("idle");
 
   const isWorking = state.status === "authenticating" || state.status === "generating";
 
@@ -84,8 +93,33 @@ export function CompanyGenerator() {
     }
 
     const blueprint = (await generationResponse.json()) as CompanyBlueprint;
+    setCart([]);
+    setCheckoutStatus("idle");
     setState({ status: "ready", blueprint });
   }
+
+  function addToCart(name: string, priceUsd: number) {
+    setCart((currentCart) => {
+      const existing = currentCart.find((item) => item.name === name);
+      if (existing) {
+        return currentCart.map((item) =>
+          item.name === name ? { ...item, quantity: item.quantity + 1 } : item,
+        );
+      }
+      return [...currentCart, { name, priceUsd, quantity: 1 }];
+    });
+  }
+
+  function confirmLocalCheckout() {
+    if (cart.length === 0 || !checkoutEmail.includes("@")) {
+      setState({ status: "error", message: "Add a product and enter an email before checkout." });
+      return;
+    }
+
+    setCheckoutStatus("confirmed");
+  }
+
+  const cartTotal = cart.reduce((total, item) => total + item.priceUsd * item.quantity, 0);
 
   return (
     <div className="generator-shell">
@@ -141,40 +175,155 @@ export function CompanyGenerator() {
 
       {state.status === "error" ? <p className="generator-error">{state.message}</p> : null}
 
-      {state.status === "ready" ? (
-        <section className="mission-control" aria-label="Generated company blueprint">
-          <div className="mission-control__header">
-            <span>{state.blueprint.status}</span>
-            <h2>{state.blueprint.company_name}</h2>
-            <p>{state.blueprint.tagline}</p>
-          </div>
+      {state.status === "authenticating" || state.status === "generating" ? (
+        <BuildPipeline currentStatus={state.status} />
+      ) : null}
 
-          <div className="blueprint-grid">
-            <article>
-              <span>Audience</span>
-              <p>{state.blueprint.audience}</p>
-            </article>
-            <article>
-              <span>Category</span>
-              <p>{state.blueprint.category}</p>
-            </article>
-            <article className="blueprint-grid__wide">
-              <span>Positioning</span>
+      {state.status === "ready" ? (
+        <>
+          <MissionControl blueprint={state.blueprint} />
+          <section className="storefront-preview" aria-label="Generated storefront preview">
+            <div className="storefront-preview__hero">
+              <span>/{state.blueprint.storefront_slug}</span>
+              <h2>{state.blueprint.company_name}</h2>
               <p>{state.blueprint.positioning}</p>
-            </article>
-            <BlueprintList title="Starter Products" items={state.blueprint.starter_products} />
-            <BlueprintList title="Storefront" items={state.blueprint.storefront_sections} />
-            <BlueprintList title="Marketing" items={state.blueprint.marketing_plan} />
-            <BlueprintList title="Launch Checklist" items={state.blueprint.launch_checklist} />
-            <article className="blueprint-grid__wide">
-              <span>Pricing Strategy</span>
-              <p>{state.blueprint.pricing_strategy}</p>
-            </article>
-            <BlueprintList title="Agent Reasoning Log" items={state.blueprint.agent_log} wide />
-          </div>
-        </section>
+              <a href="#checkout-preview">Shop launch products</a>
+            </div>
+
+            <div className="product-grid">
+              {state.blueprint.product_catalog.map((product) => (
+                <article className="product-card" key={product.name}>
+                  <div className="product-card__image" aria-hidden="true">
+                    <span />
+                  </div>
+                  <span>{product.inventory_status}</span>
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                  <strong>${product.price_usd.toFixed(2)}</strong>
+                  <small>{product.product_angle}</small>
+                  <button
+                    onClick={() => addToCart(product.name, product.price_usd)}
+                    type="button"
+                  >
+                    Add to cart
+                  </button>
+                </article>
+              ))}
+            </div>
+
+            <section className="checkout-panel" id="checkout-preview" aria-label="Local checkout preview">
+              <div>
+                <span>{state.blueprint.checkout_mode}</span>
+                <h3>Checkout</h3>
+                <p>
+                  This checkout is functional in local test mode. Connect Stripe or
+                  Commerce Layer credentials to switch from local orders to live payments.
+                </p>
+              </div>
+              <div className="cart-box">
+                {cart.length === 0 ? (
+                  <p>Your cart is empty.</p>
+                ) : (
+                  <ul>
+                    {cart.map((item) => (
+                      <li key={item.name}>
+                        <span>
+                          {item.quantity} x {item.name}
+                        </span>
+                        <strong>${(item.priceUsd * item.quantity).toFixed(2)}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <div className="cart-total">
+                  <span>Total</span>
+                  <strong>${cartTotal.toFixed(2)}</strong>
+                </div>
+                <input
+                  aria-label="Checkout email"
+                  onChange={(event) => setCheckoutEmail(event.target.value)}
+                  placeholder="customer@example.com"
+                  type="email"
+                  value={checkoutEmail}
+                />
+                <button onClick={confirmLocalCheckout} type="button">
+                  Place local test order
+                </button>
+                {checkoutStatus === "confirmed" ? (
+                  <p className="checkout-confirmation">
+                    Test order confirmed. Provider credentials are required before charging a card.
+                  </p>
+                ) : null}
+              </div>
+            </section>
+          </section>
+        </>
       ) : null}
     </div>
+  );
+}
+
+function BuildPipeline({
+  currentStatus,
+}: Readonly<{
+  currentStatus: "authenticating" | "generating";
+}>) {
+  const stages = [
+    "Authenticate founder",
+    "Research market",
+    "Discover launch products",
+    "Price catalog",
+    "Build storefront",
+    "Prepare checkout",
+  ];
+
+  return (
+    <section className="build-pipeline" aria-label="Storefront build progress">
+      <span>{currentStatus === "authenticating" ? "Securing session" : "Building storefront"}</span>
+      <ol>
+        {stages.map((stage, index) => (
+          <li key={stage} className={currentStatus === "generating" || index === 0 ? "is-active" : undefined}>
+            {stage}
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function MissionControl({ blueprint }: Readonly<{ blueprint: CompanyBlueprint }>) {
+  return (
+    <section className="mission-control" aria-label="Generated company blueprint">
+      <div className="mission-control__header">
+        <span>{blueprint.status}</span>
+        <h2>{blueprint.company_name}</h2>
+        <p>{blueprint.tagline}</p>
+      </div>
+
+      <div className="blueprint-grid">
+        <article>
+          <span>Audience</span>
+          <p>{blueprint.audience}</p>
+        </article>
+        <article>
+          <span>Category</span>
+          <p>{blueprint.category}</p>
+        </article>
+        <article className="blueprint-grid__wide">
+          <span>Positioning</span>
+          <p>{blueprint.positioning}</p>
+        </article>
+        <BlueprintList title="Starter Products" items={blueprint.starter_products} />
+        <BlueprintList title="Storefront" items={blueprint.storefront_sections} />
+        <BlueprintList title="Marketing" items={blueprint.marketing_plan} />
+        <BlueprintList title="Launch Checklist" items={blueprint.launch_checklist} />
+        <article className="blueprint-grid__wide">
+          <span>Pricing Strategy</span>
+          <p>{blueprint.pricing_strategy}</p>
+        </article>
+        <BlueprintList title="Agent Reasoning Log" items={blueprint.agent_log} wide />
+      </div>
+    </section>
   );
 }
 

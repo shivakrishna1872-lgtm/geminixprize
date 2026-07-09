@@ -17,6 +17,16 @@ class GenerateCompanyRequest(BaseModel):
     idea: str = Field(min_length=8, max_length=800)
 
 
+class StorefrontProductResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    name: str
+    description: str
+    price_usd: float
+    inventory_status: str
+    product_angle: str
+
+
 class CompanyBlueprintResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -31,4 +41,7 @@ class CompanyBlueprintResponse(BaseModel):
     marketing_plan: tuple[str, ...]
     launch_checklist: tuple[str, ...]
     agent_log: tuple[str, ...]
+    product_catalog: tuple[StorefrontProductResponse, ...]
+    checkout_mode: str
+    storefront_slug: str
     status: str

@@ -36,6 +36,17 @@ export const companyBlueprintSchema = z.object({
   marketing_plan: z.array(z.string().min(1)),
   launch_checklist: z.array(z.string().min(1)),
   agent_log: z.array(z.string().min(1)),
+  product_catalog: z.array(
+    z.object({
+      name: z.string().min(1),
+      description: z.string().min(1),
+      price_usd: z.number().positive(),
+      inventory_status: z.string().min(1),
+      product_angle: z.string().min(1),
+    }),
+  ),
+  checkout_mode: z.enum(["local_test", "provider_required"]),
+  storefront_slug: z.string().min(1),
   status: z.string().min(1),
 });
 
