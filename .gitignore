@@ -22,6 +22,7 @@ pnpm-debug.log*
 # Environment
 .env
 .env*.local
+.env*.save
 
 # Log files
 AGENT_LOGS.json

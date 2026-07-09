@@ -19,6 +19,9 @@ export function CompanyGenerator() {
     return new URLSearchParams(window.location.search).get("business-idea") ?? "build me a waterbottle company";
   });
   const [password, setPassword] = useState("");
+  const [geminiApiKey, setGeminiApiKey] = useState("");
+  const [openaiApiKey, setOpenaiApiKey] = useState("");
+  const [secretsConfigured, setSecretsConfigured] = useState(false);
   const [state, setState] = useState<GenerationState>({ status: "idle" });
 
   const isWorking = state.status === "authenticating" || state.status === "generating";
@@ -48,6 +51,27 @@ export function CompanyGenerator() {
     }
 
     setState({ status: "generating" });
+
+    if (geminiApiKey.trim() || openaiApiKey.trim()) {
+      const secretsResponse = await fetch("/api/auth/secrets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          geminiApiKey: geminiApiKey.trim() || undefined,
+          openaiApiKey: openaiApiKey.trim() || undefined,
+        }),
+      });
+
+      if (!secretsResponse.ok) {
+        setState({ status: "error", message: "Could not save API keys for this browser session." });
+        return;
+      }
+
+      setSecretsConfigured(Boolean(geminiApiKey.trim()));
+      setGeminiApiKey("");
+      setOpenaiApiKey("");
+    }
+
     const generationResponse = await fetch("/api/company/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -94,6 +118,24 @@ export function CompanyGenerator() {
           placeholder="Enter passcode"
           type="password"
           value={password}
+        />
+        <label htmlFor="gemini-api-key">Gemini API key</label>
+        <input
+          id="gemini-api-key"
+          name="gemini-api-key"
+          onChange={(event) => setGeminiApiKey(event.target.value)}
+          placeholder={secretsConfigured ? "Gemini key saved for this session" : "Paste Gemini API key"}
+          type="password"
+          value={geminiApiKey}
+        />
+        <label htmlFor="openai-api-key">OpenAI API key, optional</label>
+        <input
+          id="openai-api-key"
+          name="openai-api-key"
+          onChange={(event) => setOpenaiApiKey(event.target.value)}
+          placeholder="Stored for future features, not used by generation"
+          type="password"
+          value={openaiApiKey}
         />
       </form>
 

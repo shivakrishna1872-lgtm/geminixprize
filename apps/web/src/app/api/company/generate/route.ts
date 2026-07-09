@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { companyBlueprintSchema } from "@antigravity/contracts";
 import { z } from "zod";
-import { authCookieName } from "@/application/auth/session";
+import { authCookieName, geminiApiKeyCookieName } from "@/application/auth/session";
 import { readServerWebEnv } from "@/infrastructure/config/web-env";
 
 const generateRequestSchema = z.object({
@@ -12,6 +12,7 @@ const generateRequestSchema = z.object({
 export async function POST(request: Request) {
   const env = readServerWebEnv();
   const sessionCookie = (await cookies()).get(authCookieName);
+  const geminiApiKeyCookie = (await cookies()).get(geminiApiKeyCookieName);
 
   if (sessionCookie?.value !== env.APP_SESSION_TOKEN) {
     return NextResponse.json({ message: "Authentication required." }, { status: 401 });
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
     headers: {
       "Content-Type": "application/json",
       "X-Antigravity-Api-Key": env.ANTIGRAVITY_INTERNAL_API_KEY,
+      ...(geminiApiKeyCookie?.value ? { "X-Gemini-Api-Key": geminiApiKeyCookie.value } : {}),
     },
     body: JSON.stringify({ idea: payload.data.idea }),
     cache: "no-store",

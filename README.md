@@ -68,6 +68,10 @@ For local Gemini development, copy `services/api/.env.example` into
 automatically loads `services/api/.env.local` and `services/api/.env`. Do not
 commit real API keys.
 
+For browser-only setup, enter the Gemini API key in the MadeThis launch form.
+The key is stored as an HttpOnly cookie for the local browser session and passed
+server-side to the FastAPI service for generation. It is not committed to git.
+
 The web app protects generation behind a founder passcode and an HttpOnly
 session cookie. Local defaults are intentionally development-only:
 

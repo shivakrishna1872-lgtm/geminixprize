@@ -1,13 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
+from pydantic import SecretStr
 from pydantic import ValidationError
 
 from antigravity_api.application.generate_company import GenerateCompany
+from antigravity_api.infrastructure.gemini_generation import GeminiGeneration
+from antigravity_api.infrastructure.settings import Settings, get_settings
 from antigravity_api.presentation.http.auth import require_internal_api_key
 from antigravity_api.presentation.http.schemas import (
     CompanyBlueprintResponse,
     GenerateCompanyRequest,
 )
-from antigravity_api.presentation.http.use_case_provider import provide_generate_company
 
 router = APIRouter(tags=["companies"], dependencies=[Depends(require_internal_api_key)])
 
@@ -15,8 +19,17 @@ router = APIRouter(tags=["companies"], dependencies=[Depends(require_internal_ap
 @router.post("/companies/generate", response_model=CompanyBlueprintResponse)
 async def generate_company(
     request: Request,
-    use_case: GenerateCompany = Depends(provide_generate_company),
+    x_gemini_api_key: Optional[str] = Header(default=None),
+    settings: Settings = Depends(get_settings),
 ) -> CompanyBlueprintResponse:
+    request_scoped_key = SecretStr(x_gemini_api_key) if x_gemini_api_key else settings.gemini_api_key
+    use_case = GenerateCompany(
+        ai_generation=GeminiGeneration(
+            api_key=request_scoped_key,
+            model=settings.gemini_model,
+        )
+    )
+
     try:
         payload = GenerateCompanyRequest.model_validate(await request.json())
         blueprint = use_case.execute(idea=payload.idea)
