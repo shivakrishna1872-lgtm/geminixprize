@@ -1,4 +1,5 @@
 import { agents, businessTypes, pricingPlans } from "@/presentation/home/landing-content";
+import { CompanyGenerator } from "@/presentation/home/company-generator";
 
 export default function HomePage() {
   return (
@@ -30,18 +31,7 @@ export default function HomePage() {
             researches markets, designs brands, creates products, launches
             storefronts, and operates the business from one prompt.
           </p>
-          <form className="idea-console" aria-label="Business idea prompt">
-            <label htmlFor="business-idea">What should your AI company build?</label>
-            <div>
-              <input
-                id="business-idea"
-                name="business-idea"
-                placeholder="A premium desk setup brand for remote engineers"
-                type="text"
-              />
-              <button type="button">Generate company</button>
-            </div>
-          </form>
+          <CompanyGenerator />
         </div>
 
         <div className="pixel-stage" aria-hidden="true">

@@ -23,3 +23,20 @@ export const agentRoleSchema = z.enum([
 ]);
 
 export type AgentRole = z.infer<typeof agentRoleSchema>;
+
+export const companyBlueprintSchema = z.object({
+  company_name: z.string().min(1),
+  tagline: z.string().min(1),
+  category: z.string().min(1),
+  audience: z.string().min(1),
+  positioning: z.string().min(1),
+  starter_products: z.array(z.string().min(1)),
+  pricing_strategy: z.string().min(1),
+  storefront_sections: z.array(z.string().min(1)),
+  marketing_plan: z.array(z.string().min(1)),
+  launch_checklist: z.array(z.string().min(1)),
+  agent_log: z.array(z.string().min(1)),
+  status: z.string().min(1),
+});
+
+export type CompanyBlueprint = z.infer<typeof companyBlueprintSchema>;

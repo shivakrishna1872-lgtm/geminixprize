@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from antigravity_api.infrastructure.settings import get_settings
+from antigravity_api.presentation.http.company_router import router as company_router
 from antigravity_api.presentation.http.health_router import router as health_router
 
 
@@ -23,5 +24,6 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(health_router, prefix="/v1")
+    app.include_router(company_router, prefix="/v1")
 
     return app

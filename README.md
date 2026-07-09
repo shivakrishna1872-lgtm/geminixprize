@@ -67,6 +67,15 @@ For local Gemini development, copy `services/api/.env.example` into an ignored
 local env file or export `GEMINI_API_KEY` in your shell. Do not commit real API
 keys.
 
+The web app protects generation behind a founder passcode and an HttpOnly
+session cookie. Local defaults are intentionally development-only:
+
+- `APP_AUTH_PASSWORD=founder-pass`
+- `APP_SESSION_TOKEN=dev-antigravity-session-token`
+- `ANTIGRAVITY_INTERNAL_API_KEY=dev-antigravity-internal-key`
+
+Use Secret Manager-backed values for deployed environments.
+
 Quality gates for every milestone:
 
 ```bash
