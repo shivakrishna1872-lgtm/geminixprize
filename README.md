@@ -1,13 +1,24 @@
-# 🌌 AntiGravity
+# 🌌 MadeThis / AntiGravity
+## Autonomous AI Business Operating System
 
 [![Next.js](https://img.shields.io/badge/Frontend-Next.js%2015-black?logo=next.js)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![Gemini](https://img.shields.io/badge/AI-Google%20Gemini%202.0-blue?logo=google)](https://deepmind.google/technologies/gemini/)
 [![XPRIZE](https://img.shields.io/badge/Hackathon-Google%20Gemini%20XPRIZE%202026-purple)](#)
 
-> An AI-native platform that autonomously creates, launches, and operates real online businesses from a single user prompt.
+> An AI-native platform that autonomously creates, launches, and operates real online businesses from a single user prompt. Built for the Google Gemini XPRIZE Hackathon.
 
-AntiGravity is a production-ready startup built for the **Google Gemini XPRIZE Hackathon**. The platform allows users to describe an idea (e.g., *"Build me a premium anime clothing brand"*), and then autonomously handles market research, branding, website creation, product design, payment configuration, legal policies, and financial projection mapping—all updating in real-time.
+---
+
+# Overview
+
+**MadeThis** (with its **AntiGravity** experience frontend) is an autonomous AI-powered business operating system designed to transform ideas into executable businesses. 
+
+Rather than functioning as a single AI assistant, the platform operates as a coordinated network of specialized AI agents that collaborate to research markets, develop products, create branding, generate commerce assets, design marketing strategies, and analyze business performance.
+
+The MVP begins with AI-powered product discovery and business strategy generation. However, the architecture is intentionally designed to support a much larger autonomous business platform capable of managing the complete lifecycle of a company.
+
+The long-term vision is to provide every founder with an AI executive team capable of researching, planning, launching, and operating businesses autonomously.
 
 ---
 
@@ -25,16 +36,31 @@ AntiGravity is a production-ready startup built for the **Google Gemini XPRIZE H
 
 ## 🧠 The Agent Fleet
 
-AntiGravity relies on 8 specialized agents, each managing a specific segment of the business creation process:
+The platform relies on 8 specialized agents, each managing a specific segment of the business creation process:
 
 1.  **🧠 Atlas (CEO/Planner)**: Ingests the prompt, conducts competitor research, and constructs the initial **Business Blueprint**.
 2.  **🎨 Nova (Brand Designer)**: Generates typography pairs, color palettes, taglines, and brand keywords.
 3.  **🔄 Orbit (Operations Specialist)**: Selects products from a print-on-demand catalog, setting pricing and SKUs.
 4.  **💰 Vault (Finance Director)**: Configures payment gateways, pricing tier structures, and calculates revenue projections.
-5.  **⚙️ Forge (Software Engineer)**: Automatically synthesizes the page layouts and publishes the mock storefront.
+5.  **⚙️ Forge (Software Engineer)**: Automatically synthesizes the page layouts and publishes the storefront preview.
 6.  **📢 Pulse (Marketing Lead)**: Generates SEO-optimized product copy, social media ads, and newsletter scripts.
 7.  **🎧 Echo (Support Specialist)**: Drafts customized customer support FAQs and return/refund policies.
 8.  **📊 Insight (Analytics Lead)**: Defines targeted KPIs, launch readiness checklists, and a 30-day action plan.
+
+---
+
+# Architecture Philosophy
+
+The platform follows strict clean architecture and domain-driven design principles:
+
+> Core business intelligence should never depend on frameworks, databases, user interfaces, or external providers.
+
+The system is designed so that individual technologies can be replaced without rewriting the underlying business logic:
+*   Gemini can be replaced with another AI provider.
+*   Databases can be migrated.
+*   Frontend frameworks can change.
+*   Cloud providers can change.
+*   The core business engine remains independent.
 
 ---
 
@@ -53,6 +79,10 @@ geminixprize/
 │   └── services/              # Swappable Mock Service Providers (Stripe, Duda, Printify)
 ├── shared/
 │   └── types/                 # Shared data models for cross-application type safety
+├── services/
+│   └── api/                   # Modular API Services (settings, schemas, health routers)
+├── packages/
+│   └── contracts/             # Shared typescript schemas and type definitions
 ├── infrastructure/            # Docker configurations and Terraform provisioning scripts
 └── README.md                  # Project documentation
 ```
@@ -111,4 +141,4 @@ geminixprize/
 
 ## 🏆 Hackathon Context
 
-This application was developed as a submission for the **Google Gemini XPRIZE Hackathon**, showing how Gemini 2.0 can act as a fully autonomous orchestration layer to build and scale online startups from scratch.
+This application was developed as a submission for the **Google Gemini XPRIZE Hackathon**, demonstrating how Gemini 2.0 can act as a fully autonomous orchestration layer to build and scale online startups from scratch.
