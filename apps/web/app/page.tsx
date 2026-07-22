@@ -5,6 +5,7 @@ import { GlassCard } from "@/components/shared/GlassCard";
 import { AnimatedClouds } from "@/components/hero/AnimatedClouds";
 import { PixelSkyline } from "@/components/hero/PixelSkyline";
 import { PromptInput } from "@/components/hero/PromptInput";
+import { ScrollMotionGraphics } from "@/components/hero/ScrollMotionGraphics";
 
 const AGENTS = [
   { id: 'atlas', name: 'Atlas', role: 'CEO', emoji: '🧠', desc: 'Strategy & Coordination' },
@@ -26,6 +27,7 @@ export default function LandingPage() {
         <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-brand-blue blur-[120px] opacity-20 animate-pulse-glow" style={{ animationDelay: "1s" }} />
         
         <AnimatedClouds />
+        <ScrollMotionGraphics />
         
         {/* CSS Rain */}
         {Array.from({ length: 20 }).map((_, i) => (
